@@ -6,6 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
+#define CANNOT_GET_STUPID_ZIP_TO_COMPILE 1
 
 #include "analysiswidget.h"
 #include "boardsetup.h"
@@ -33,8 +34,10 @@
 #include "pgndatabase.h"
 #include "playerlistwidget.h"
 #include "preferences.h"
-#include "quazip.h"
-#include "quazipfile.h"
+#ifndef CANNOT_GET_STUPID_ZIP_TO_COMPILE
+    #include "quazip.h"
+    #include "quazipfile.h"
+#endif
 #include "savedialog.h"
 #include "settings.h"
 #include "tablebase.h"
@@ -677,6 +680,7 @@ void MainWindow::openDatabaseArchive(QString fname, bool utf8)
 
         if (!fname.isEmpty())
         {
+            #ifndef CANNOT_GET_STUPID_ZIP_TO_COMPILE
             QuaZip zip(fname);
             if (zip.open(QuaZip::mdUnzip))
             {
@@ -715,6 +719,9 @@ void MainWindow::openDatabaseArchive(QString fname, bool utf8)
                 }
                 zip.close();
             }
+            #else
+            MessageDialog::information(tr("Cannot open zip files in this version."));
+            #endif
         }
     }
 }
